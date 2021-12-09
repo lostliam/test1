@@ -1,0 +1,33 @@
+name: Cloud189Checkin
+
+on:
+  workflow_dispatch:
+  push:
+  schedule:
+    # 07:05 everyday in UTC+8, 23:05 everyday in UTC+0
+  - cron: '15 */6 * * *'
+
+jobs:
+
+  check-in:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30         
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Python
+      run: |
+        sudo apt update && \
+        sudo apt install python3
+      
+    - name: requirements
+      run: |
+        pip3 install -r requirements.txt
+        
+    - name: Checkin
+      env:
+        USERS_COVER: ${{ secrets.PHONE }}
+      run: |
+        echo "$USERS_COVER" > ./config.json
+        python3 nt.py 
+
